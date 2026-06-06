@@ -18,6 +18,7 @@ ENV/
 .env.local
 .env.*.local
 !.env.example
+!frontend/.env.production
 
 # Extracted PSD layers (regenerated from PSDs; do not commit large PNGs)
 backend/layers/eva/*.png

@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     layer_path: Path = Path("./layers")
     redis_url: str = ""
     port: int = 8000
-    cors_origins: str = "http://localhost:3000,http://localhost:3001"
+    cors_origins: str = "*"
     log_level: str = "INFO"
     jpeg_quality: int = 85
     cache_ttl: int = 2592000  # 30 days
@@ -417,7 +417,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
