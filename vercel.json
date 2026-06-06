@@ -7,7 +7,7 @@
         },
         "backend": {
             "root": "backend",
-            "routePrefix": "/_/backend",
+            "routePrefix": "/api/backend",
             "framework": "fastapi",
             "entrypoint": "compositor_service:app"
         }

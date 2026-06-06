@@ -45,7 +45,7 @@ const tabStyle = (active: boolean): React.CSSProperties => ({
 
 export default function TestPage() {
   const [activeModel, setActiveModel] = useState<Model>("eva_ribelle");
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "/api/compositor";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "/api/backend";
 
   const switchModel = (m: Model) => {
     // Clear URL params so each model starts from its own defaults

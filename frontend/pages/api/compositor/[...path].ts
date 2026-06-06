@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 function getBackendUrl(): string {
   if (process.env.BACKEND_URL) return process.env.BACKEND_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}/_/backend`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}/api/backend`;
   return "http://localhost:8000";
 }
 
