@@ -1,0 +1,7 @@
+{
+  "name": "energica-configurator",
+  "private": true,
+  "dependencies": {
+    "next": "15.3.2"
+  }
+}
