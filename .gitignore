@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+*.egg
+.pytest_cache/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Extracted PSD layers (regenerated from PSDs; do not commit large PNGs)
+backend/layers/eva/*.png
+backend/layers/essesse9/*.png
+backend/layers/ego/*.png
+backend/layers/ribelle/*.png
+# Keep config.json files in version control
+!backend/layers/**/config.json
+
+# Node
+node_modules/
+.next/
+out/
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Test artefacts
+.coverage
+htmlcov/

@@ -1,0 +1,193 @@
+/*
+ * Energica Visual Branding Toolkit (2026)
+ * Official design token stylesheet.
+ * All components must use these variables exclusively — no hardcoded color values.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+/* ---------------------------------------------------------------------------
+ * Color tokens — Official Energica Palette
+ * --------------------------------------------------------------------------- */
+:root {
+  /* Brand primaries */
+  --energica-green:  #78BE20;
+  --energica-black:  #000000;
+  --racing-red:      #D32F2F;
+  --white:           #FFFFFF;
+
+  /* Dark surface scale */
+  --graphite:        #121212;
+  --carbon:          #1A1A1A;
+  --dark:            #262626;
+
+  /* Neutral grays (derived from black family) */
+  --gray-50:         #F9F9F9;
+  --gray-100:        #F5F5F5;
+  --gray-200:        #EEEEEE;
+  --gray-300:        #E0E0E0;
+  --gray-400:        #BDBDBD;
+  --gray-500:        #9E9E9E;
+  --gray-600:        #757575;
+  --gray-700:        #616161;
+  --gray-800:        #424242;
+  --gray-900:        #212121;
+
+  /* ---------------------------------------------------------------------------
+   * Typography tokens
+   * --------------------------------------------------------------------------- */
+  --font-primary:   'Barlow Condensed', sans-serif;
+  --font-secondary: 'IBM Plex Sans', sans-serif;
+
+  --text-xs:   11px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   24px;
+  --text-2xl:  32px;
+  --text-3xl:  40px;
+  --text-4xl:  48px;
+
+  --leading-tight:  1.2;
+  --leading-normal: 1.6;
+  --leading-loose:  1.8;
+
+  /* ---------------------------------------------------------------------------
+   * Spacing tokens (8px grid)
+   * --------------------------------------------------------------------------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Legacy aliases kept for compatibility */
+  --spacing-xs:  var(--space-2);
+  --spacing-sm:  var(--space-3);
+  --spacing-md:  var(--space-4);
+  --spacing-lg:  var(--space-6);
+  --spacing-xl:  var(--space-8);
+  --spacing-2xl: var(--space-10);
+
+  /* ---------------------------------------------------------------------------
+   * Border radius
+   * --------------------------------------------------------------------------- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-full: 9999px;
+
+  /* ---------------------------------------------------------------------------
+   * Shadows — minimal, professional
+   * --------------------------------------------------------------------------- */
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md:  0 4px 6px rgba(0, 0, 0, 0.10);
+  --shadow-lg:  0 10px 15px rgba(0, 0, 0, 0.10);
+  --shadow-xl:  0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* ---------------------------------------------------------------------------
+   * Transitions
+   * --------------------------------------------------------------------------- */
+  --transition-fast:   100ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow:   300ms ease;
+}
+
+/* ---------------------------------------------------------------------------
+ * Light mode semantic aliases (default)
+ * --------------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --bg-primary:      var(--white);
+  --bg-secondary:    var(--gray-50);
+  --bg-tertiary:     var(--gray-100);
+  --text-primary:    var(--graphite);
+  --text-secondary:  var(--gray-600);
+  --text-muted:      var(--gray-400);
+  --border-color:    var(--gray-200);
+  --border-strong:   var(--gray-300);
+  --accent:          var(--energica-green);
+  --accent-hover:    #65a81a;   /* green −10% lightness */
+  --error:           var(--racing-red);
+  --surface:         var(--white);
+  --surface-raised:  var(--gray-50);
+}
+
+/* ---------------------------------------------------------------------------
+ * Dark mode semantic aliases
+ * --------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary:      var(--graphite);
+    --bg-secondary:    var(--carbon);
+    --bg-tertiary:     var(--dark);
+    --text-primary:    var(--white);
+    --text-secondary:  var(--gray-300);
+    --text-muted:      var(--gray-500);
+    --border-color:    var(--dark);
+    --border-strong:   #333333;
+    --accent:          var(--energica-green);
+    --accent-hover:    #8dd124;   /* green +5% lightness for dark contrast */
+    --error:           #ef5350;   /* slightly lighter red for dark bg */
+    --surface:         var(--carbon);
+    --surface-raised:  var(--dark);
+  }
+}
+
+[data-theme="dark"] {
+  --bg-primary:      var(--graphite);
+  --bg-secondary:    var(--carbon);
+  --bg-tertiary:     var(--dark);
+  --text-primary:    var(--white);
+  --text-secondary:  var(--gray-300);
+  --text-muted:      var(--gray-500);
+  --border-color:    var(--dark);
+  --border-strong:   #333333;
+  --accent:          var(--energica-green);
+  --accent-hover:    #8dd124;
+  --error:           #ef5350;
+  --surface:         var(--carbon);
+  --surface-raised:  var(--dark);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base reset & typography
+ * --------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+/* Utility classes */
+.font-primary  { font-family: var(--font-primary); }
+.font-secondary { font-family: var(--font-secondary); }
+
+.text-accent   { color: var(--accent); }
+.text-error    { color: var(--error); }
+.text-muted    { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
+
+/* Focus visible — accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
