@@ -376,7 +376,8 @@
     "mutually_exclusive": [
       [
         "es_13_esseesse9_sunrise_red",
-        "es_14_esseesse9_riviera_green"
+        "es_14_esseesse9_riviera_green",
+        "es_02_cnc_titanium_grey"
       ],
       [
         "es_22_bellypan_bormio_grey_stripes",
@@ -416,12 +417,7 @@
         "es_01_base_esseesse9_bormio_ice"
       ]
     },
-    "incompatibilities": {
-      "es_02_cnc_titanium_grey": [
-        "es_13_esseesse9_sunrise_red",
-        "es_14_esseesse9_riviera_green"
-      ]
-    },
+    "incompatibilities": {},
     "any_of_dependencies": {}
   }
 }

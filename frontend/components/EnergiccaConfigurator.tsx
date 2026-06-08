@@ -510,8 +510,11 @@ function useConfigurator(model: Model, apiUrl: string) {
 
         if (exclusive) {
           // Radio behaviour: clear all peers in the group before selecting the new one.
-          // Use backend mutually_exclusive rules first; fall back to the UI group sibling IDs.
-          const peers = exclusiveGroupOf(layerId) ?? groupPeers ?? [];
+          // Prefer the UI group's full sibling list (groupPeers) — it is always complete.
+          // The backend's mutually_exclusive rules may be a subset (e.g. es_02 is only in
+          // incompatibilities for essesse9, not mutually_exclusive), so using them alone
+          // can leave stale selections when the rules don't cover every sibling.
+          const peers = groupPeers ?? exclusiveGroupOf(layerId) ?? [];
           peers.forEach((id) => {
             if (!alwaysVisible.has(id)) next.delete(id);
           });
