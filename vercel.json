@@ -4,7 +4,6 @@
     "outputDirectory": "frontend/.next",
     "functions": {
         "api/backend.py": {
-            "runtime": "python3.12",
             "maxDuration": 60,
             "includeFiles": "backend/layers/**/config.json"
         }
