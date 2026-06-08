@@ -17,6 +17,7 @@ import logging
 import os
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal, Any
@@ -111,6 +112,35 @@ def _resolve_layer_path(model: str, filename: str, local_path: Path) -> Path:
         return local_path  # compositor will log it as missing
 
     return cached
+
+
+_prefetch_pool = ThreadPoolExecutor(max_workers=8)
+
+
+def _prefetch_model_layers(model: str, config: ConfigSchema) -> None:
+    """Download all layer PNGs for a model to /tmp in parallel.
+
+    Called as a background task on GET /config so layers are warm by the
+    time the first POST /configure arrives.
+    """
+    if not _BLOB_BASE:
+        return
+    layer_dir = settings.layer_path / model
+
+    def _fetch(filename: str) -> None:
+        _resolve_layer_path(model, filename, layer_dir / filename)
+
+    futures = [
+        _prefetch_pool.submit(_fetch, layer.filename)
+        for layer in config.layers
+        if not (layer_dir / layer.filename).exists()
+        and not (_TMP_LAYERS / model / layer.filename).exists()
+    ]
+    for f in futures:
+        try:
+            f.result()
+        except Exception as exc:
+            logger.warning("Prefetch error: %s", exc)
 
 
 # ---------------------------------------------------------------------------
@@ -493,17 +523,20 @@ async def health() -> HealthResponse:
 
 
 @app.get("/config/{model}", response_model=ConfigSchema, tags=["config"])
-async def get_config(model: str) -> ConfigSchema:
+async def get_config(model: str, background_tasks: BackgroundTasks) -> ConfigSchema:
     """Return the full layer configuration schema for a model."""
     if model not in VALID_MODELS:
         raise HTTPException(status_code=404, detail=f"Unknown model: {model}")
     try:
-        return load_config(model)
+        config = load_config(model)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Failed to load config for model '%s': %s", model, exc)
         raise HTTPException(status_code=500, detail="Failed to load model configuration.") from exc
+    # Pre-download all layer PNGs in background so /configure is fast
+    background_tasks.add_task(_prefetch_model_layers, model, config)
+    return config
 
 
 @app.post("/validate", response_model=ValidateResponse, tags=["config"])
@@ -542,11 +575,16 @@ async def configure(request: ConfigureRequest, background_tasks: BackgroundTasks
     cache_key = ImageCache.make_key(request.model, request.layers, request.format)
     media_type = "image/jpeg" if request.format == "jpeg" else "image/png"
 
+    cache_headers = {
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "ETag": cache_key[:16],
+    }
+
     # Try cache first
     cached = _cache.get(cache_key)
     if cached:
         logger.debug("Cache hit: %s", cache_key[:12])
-        return Response(content=cached, media_type=media_type)
+        return Response(content=cached, media_type=media_type, headers=cache_headers)
 
     # Composite
     try:
@@ -563,4 +601,4 @@ async def configure(request: ConfigureRequest, background_tasks: BackgroundTasks
     # Store in cache asynchronously (non-blocking)
     background_tasks.add_task(_cache.set, cache_key, image_bytes)
 
-    return Response(content=image_bytes, media_type=media_type)
+    return Response(content=image_bytes, media_type=media_type, headers=cache_headers)
