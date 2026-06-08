@@ -504,19 +504,17 @@ function useConfigurator(model: Model, apiUrl: string) {
   }, []);
 
   const toggleLayer = useCallback(
-    (layerId: string, exclusive: boolean) => {
+    (layerId: string, exclusive: boolean, groupPeers?: string[]) => {
       setVisibleLayers((prev) => {
         const next = new Set(prev);
 
         if (exclusive) {
-          // Radio behaviour — deactivate peers (never touch always-visible),
-          // activate this one, then auto-add its dependencies.
-          const peers = exclusiveGroupOf(layerId);
-          if (peers) {
-            peers.forEach((id) => {
-              if (!alwaysVisible.has(id)) next.delete(id);
-            });
-          }
+          // Radio behaviour: clear all peers in the group before selecting the new one.
+          // Use backend mutually_exclusive rules first; fall back to the UI group sibling IDs.
+          const peers = exclusiveGroupOf(layerId) ?? groupPeers ?? [];
+          peers.forEach((id) => {
+            if (!alwaysVisible.has(id)) next.delete(id);
+          });
           next.add(layerId);
           // Auto-enable dependencies (e.g. base layer required by an overlay)
           const deps = config?.rules.dependencies[layerId] ?? [];
@@ -783,7 +781,7 @@ export default function EnergiccaConfigurator({
                             active={visibleLayers.has(layer.id)}
                             disabled={alwaysVisible.has(layer.id)}
                             exclusive={isExclusive}
-                            onToggle={() => toggleLayer(layer.id, isExclusive)}
+                            onToggle={() => toggleLayer(layer.id, isExclusive, layers.map((l) => l.id))}
                           />
                         ))}
                       </div>
