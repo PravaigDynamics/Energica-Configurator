@@ -1,0 +1,7 @@
+fastapi==0.115.5
+pydantic==2.10.3
+pydantic-settings==2.6.1
+Pillow==11.0.0
+redis==5.2.0
+python-multipart==0.0.18
+python-dotenv==1.0.1

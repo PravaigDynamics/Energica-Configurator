@@ -20,13 +20,9 @@ ENV/
 !.env.example
 !frontend/.env.production
 
-# Extracted PSD layers (regenerated from PSDs; do not commit large PNGs)
-backend/layers/eva/*.png
-backend/layers/essesse9/*.png
-backend/layers/ego/*.png
-backend/layers/ribelle/*.png
-# Keep config.json files in version control
-!backend/layers/**/config.json
+# Extracted PSD layers — regenerated from PSDs; served via Vercel Blob Storage
+backend/layers/**/*.png
+backend/layers/**/*.PNG
 
 # Node
 node_modules/

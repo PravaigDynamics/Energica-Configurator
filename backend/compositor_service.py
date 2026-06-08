@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import time
+import urllib.request
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal, Any
@@ -63,6 +64,51 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# ---------------------------------------------------------------------------
+# Blob layer resolver
+# ---------------------------------------------------------------------------
+
+# When running on Vercel, layer PNGs are stored in Vercel Blob Storage.
+# Set BLOB_BASE_URL to the store's public CDN root (e.g.
+# https://<id>.public.blob.vercel-storage.com). The compositor will
+# download each layer to /tmp on first use and cache it for warm invocations.
+_BLOB_BASE = os.getenv("BLOB_BASE_URL", "").rstrip("/")
+_BLOB_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN", "")
+_TMP_LAYERS = Path("/tmp/energica-layers")
+
+
+def _resolve_layer_path(model: str, filename: str, local_path: Path) -> Path:
+    """Return a readable path for a layer PNG.
+
+    Tries the local filesystem first (works in dev and Docker).
+    Falls back to downloading from Vercel Blob Storage into /tmp when the
+    file is absent and BLOB_BASE_URL is configured.
+    """
+    if local_path.exists():
+        return local_path
+
+    if not _BLOB_BASE:
+        return local_path  # will be logged as missing by the compositor
+
+    cached = _TMP_LAYERS / model / filename
+    if cached.exists():
+        return cached
+
+    cached.parent.mkdir(parents=True, exist_ok=True)
+    url = f"{_BLOB_BASE}/layers/{model}/{filename}"
+    try:
+        req = urllib.request.Request(url)
+        if _BLOB_TOKEN:
+            req.add_header("Authorization", f"Bearer {_BLOB_TOKEN}")
+        with urllib.request.urlopen(req) as resp:
+            cached.write_bytes(resp.read())
+        logger.debug("Downloaded layer from Blob: %s", url)
+    except Exception as exc:
+        logger.warning("Failed to fetch layer from Blob (%s): %s", url, exc)
+        return local_path  # compositor will log it as missing
+
+    return cached
 
 
 # ---------------------------------------------------------------------------
@@ -309,7 +355,7 @@ class ImageCompositor:
         ]
 
         for meta in ordered:
-            png_path = self._layer_dir / meta.filename
+            png_path = _resolve_layer_path(self._model, meta.filename, self._layer_dir / meta.filename)
             if not png_path.exists():
                 logger.warning("Layer file missing: %s — skipped.", png_path)
                 continue
