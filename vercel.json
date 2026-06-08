@@ -5,7 +5,7 @@
     "functions": {
         "api/backend.py": {
             "maxDuration": 60,
-            "includeFiles": "backend/layers/**/config.json"
+            "includeFiles": "backend/**"
         }
     },
     "rewrites": [
