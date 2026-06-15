@@ -54,7 +54,7 @@ const MODEL_DISPLAY_NAMES: Record<Model, string> = {
 
 const GROUP_CONFIG: Record<string, GroupConfig> = {
   base_color: {
-    label: "BASE COLOR",
+    label: "COLORS",
     description: "Select the primary finish for your motorcycle.",
     exclusive: true,
   },
@@ -515,13 +515,26 @@ function useConfigurator(model: Model, apiUrl: string) {
           // incompatibilities for essesse9, not mutually_exclusive), so using them alone
           // can leave stale selections when the rules don't cover every sibling.
           const peers = groupPeers ?? exclusiveGroupOf(layerId) ?? [];
+
+          // A group is "required" (must always have exactly one active member) if any
+          // of its peers is visible_by_default. Optional groups (e.g. ergal screws,
+          // where neither option is on by default) support deselecting the active
+          // option by clicking it again, returning to "none selected".
+          const isRequired = peers.some(
+            (id) => config?.layers.find((l) => l.id === id)?.visible_by_default,
+          );
+          const wasActive = next.has(layerId) && !alwaysVisible.has(layerId);
+
           peers.forEach((id) => {
             if (!alwaysVisible.has(id)) next.delete(id);
           });
-          next.add(layerId);
-          // Auto-enable dependencies (e.g. base layer required by an overlay)
-          const deps = config?.rules.dependencies[layerId] ?? [];
-          deps.forEach((dep) => next.add(dep));
+
+          if (!(wasActive && !isRequired)) {
+            next.add(layerId);
+            // Auto-enable dependencies (e.g. base layer required by an overlay)
+            const deps = config?.rules.dependencies[layerId] ?? [];
+            deps.forEach((dep) => next.add(dep));
+          }
         } else {
           // Checkbox behaviour — never remove always-visible layers
           if (alwaysVisible.has(layerId)) return prev;
@@ -654,6 +667,14 @@ export default function EnergiccaConfigurator({
     });
   }, [shareUrl]);
 
+  // An always-visible layer that also appears in a mutually_exclusive group is a
+  // selectable option (e.g. a base color whose "selection" is just the absence of
+  // any overlay), not a hidden structural layer — so it should still render as an option.
+  const isSelectableAlwaysVisible = useCallback(
+    (id: string) => config?.rules.mutually_exclusive.some((g) => g.includes(id)) ?? false,
+    [config],
+  );
+
   // Group layers for rendering
   const groupedLayers = useMemo<[string, LayerMeta[]][]>(() => {
     if (!config) return [];
@@ -664,7 +685,8 @@ export default function EnergiccaConfigurator({
       const layers = layerIds
         .map((id) => config.layers.find((l) => l.id === id))
         .filter((l): l is LayerMeta => !!l)
-        .filter((l) => !alwaysVisible.has(l.id)); // hide structural always-visible layers
+        // hide structural always-visible layers, but keep selectable color choices
+        .filter((l) => !alwaysVisible.has(l.id) || isSelectableAlwaysVisible(l.id));
 
       if (layers.length === 0) continue;
       layers.forEach((l) => rendered.add(l.id));
@@ -678,7 +700,7 @@ export default function EnergiccaConfigurator({
     if (ungrouped.length > 0) result.push(["other", ungrouped]);
 
     return result;
-  }, [config, alwaysVisible]);
+  }, [config, alwaysVisible, isSelectableAlwaysVisible]);
 
   const displayName = MODEL_DISPLAY_NAMES[model] ?? model.toUpperCase();
 
@@ -782,7 +804,7 @@ export default function EnergiccaConfigurator({
                             key={layer.id}
                             layer={layer}
                             active={visibleLayers.has(layer.id)}
-                            disabled={alwaysVisible.has(layer.id)}
+                            disabled={alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id)}
                             exclusive={isExclusive}
                             onToggle={() => toggleLayer(layer.id, isExclusive, layers.map((l) => l.id))}
                           />

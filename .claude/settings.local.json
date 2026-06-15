@@ -59,7 +59,30 @@
       "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python test_experia_spec.py)",
       "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python test_ego_spec.py)",
       "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python test_essesse9_spec.py)",
-      "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python test_eva_ribelle_spec.py)"
+      "Bash(PYTHONIOENCODING=utf-8 .venv/Scripts/python test_eva_ribelle_spec.py)",
+      "Bash(grep -v \"^$\")",
+      "Bash(BLOB_READ_WRITE_TOKEN=\"vercel_blob_rw_R1QvKKD1okRPFOAc_X4HufZCjAdS3tXhHyM0sfS7DIrK4nV\" python scripts/upload_layers.py)",
+      "Bash(BLOB_READ_WRITE_TOKEN=vercel_blob_rw_R1QvKKD1okRPFOAc_X4HufZCjAdS3tXhHyM0sfS7DIrK4nV python3 -c ' *)",
+      "Bash(curl -s -X PUT https://blob.vercel-storage.com/test/hello.txt -H 'Authorization: Bearer vercel_blob_rw_R1QvKKD1okRPFOAc_X4HufZCjAdS3tXhHyM0sfS7DIrK4nV' -H 'x-api-version: 7' -H 'content-type: text/plain' -H 'x-access: private' -d hello)",
+      "Bash(curl -s -X PUT https://blob.vercel-storage.com/test/hello.txt -H 'Authorization: Bearer vercel_blob_rw_R1QvKKD1okRPFOAc_X4HufZCjAdS3tXhHyM0sfS7DIrK4nV' -H 'x-api-version: 7' -H 'content-type: text/plain' -d hello)",
+      "Bash(npm --version)",
+      "Bash(BLOB_READ_WRITE_TOKEN=\"vercel_blob_rw_R1QvKKD1okRPFOAc_X4HufZCjAdS3tXhHyM0sfS7DIrK4nV\" node scripts/upload_layers.mjs)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git config *)",
+      "Bash(cmdkey /delete:LegacyGeneric:target=git:https://github.com)",
+      "Bash(cmdkey /delete:LegacyGeneric:target=https://github.com)",
+      "Bash(git credential *)",
+      "Bash(git credential-manager *)",
+      "Bash(cmdkey /list)",
+      "Bash(npm show *)",
+      "Bash(node -e \"const v=JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\)\\); console.log\\(v.filter\\(x=>x.startsWith\\('15.'\\)\\).slice\\(-10\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(git rm *)",
+      "Bash(python -c \"import json; c=json.load\\(open\\('backend/layers/essesse9/config.json'\\)\\); print\\('GROUPS:', list\\(c['groups'].keys\\(\\)\\)\\); print\\(\\); print\\('MUTUALLY_EXCLUSIVE count:', len\\(c['rules']['mutually_exclusive']\\)\\); [print\\(g\\) for g in c['rules']['mutually_exclusive']]\")",
+      "Bash(python -c \"import json; c=json.load\\(open\\('backend/layers/essesse9/config.json'\\)\\); print\\('BASE_COLOR group:', c['groups']['base_color']\\)\")",
+      "Bash(python -c \"import json; c=json.load\\(open\\('backend/layers/essesse9/config.json'\\)\\); layers={l['id']:l for l in c['layers']}; print\\(json.dumps\\(layers.get\\('es_02_cnc_titanium_grey',{}\\), indent=2\\)\\); print\\(\\); print\\(json.dumps\\(layers.get\\('es_13_esseesse9_sunrise_red',{}\\), indent=2\\)\\)\")",
+      "Bash(python -c \"import json; c=json.load\\(open\\('backend/layers/essesse9/config.json'\\)\\); print\\(json.dumps\\(c['rules'].get\\('incompatibilities', {}\\), indent=2\\)\\)\")"
     ]
   }
 }

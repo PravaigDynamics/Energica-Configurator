@@ -273,7 +273,8 @@
   "groups": {
     "base_color": [
       "er_13_eva_tricolore",
-      "er_12_eva_rosso_corsa"
+      "er_12_eva_rosso_corsa",
+      "er_01_base_ribelle_stealth_grey"
     ],
     "suspension": [
       "er_52_standard_suspensions",
@@ -305,18 +306,19 @@
       "er_81_splash_guard",
       "er_91_side_bags_kit",
       "er_92_bags_plates_red",
-      "er_93_bags_plates_gun_metal",
-      "background"
+      "er_93_bags_plates_gun_metal"
     ]
   },
   "rules": {
     "always_visible": [
-      "er_01_base_ribelle_stealth_grey"
+      "er_01_base_ribelle_stealth_grey",
+      "background"
     ],
     "mutually_exclusive": [
       [
         "er_13_eva_tricolore",
-        "er_12_eva_rosso_corsa"
+        "er_12_eva_rosso_corsa",
+        "er_01_base_ribelle_stealth_grey"
       ],
       [
         "er_52_standard_suspensions",
