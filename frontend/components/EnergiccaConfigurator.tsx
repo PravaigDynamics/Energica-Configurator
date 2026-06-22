@@ -808,16 +808,24 @@ export default function EnergiccaConfigurator({
                         role={isExclusive ? "radiogroup" : "group"}
                         aria-label={grpCfg.label}
                       >
-                        {layers.map((layer) => (
+                        {layers.map((layer) => {
+                          // For always-visible layers in an exclusive group (e.g. Stealth Grey base),
+                          // "active" means no sibling overlay is selected — not just "is in visibleLayers"
+                          // (which is always true for always-visible layers).
+                          const isActive = alwaysVisible.has(layer.id) && isExclusive
+                            ? !layers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
+                            : visibleLayers.has(layer.id);
+                          return (
                           <OptionRow
                             key={layer.id}
                             layer={layer}
-                            active={visibleLayers.has(layer.id)}
+                            active={isActive}
                             disabled={alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id)}
                             exclusive={isExclusive}
                             onToggle={() => toggleLayer(layer.id, isExclusive, layers.map((l) => l.id))}
                           />
-                        ))}
+                          );
+                        })}
                       </div>
                     </section>
                   );
