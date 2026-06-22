@@ -621,11 +621,16 @@ function OptionRow({ layer, active, disabled, exclusive, onToggle }: OptionRowPr
         checked={active}
         disabled={disabled}
         onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
         style={S.nativeControl}
         aria-label={displayName}
         tabIndex={-1}
       />
-      <label htmlFor={inputId} style={S.optionLabel(active)}>
+      <label
+        htmlFor={inputId}
+        style={S.optionLabel(active)}
+        onClick={(e) => e.stopPropagation()}
+      >
         {displayName}
       </label>
     </div>
