@@ -667,11 +667,20 @@ export default function EnergiccaConfigurator({
     });
   }, [shareUrl]);
 
-  // An always-visible layer that also appears in a mutually_exclusive group is a
-  // selectable option (e.g. a base color whose "selection" is just the absence of
-  // any overlay), not a hidden structural layer — so it should still render as an option.
+  // An always-visible layer explicitly placed in an exclusive UI group is a
+  // selectable option (e.g. Stealth Grey base whose "selection" means no overlay),
+  // not a hidden structural layer — keep it visible and clickable.
   const isSelectableAlwaysVisible = useCallback(
-    (id: string) => config?.rules.mutually_exclusive.some((g) => g.includes(id)) ?? false,
+    (id: string) => {
+      if (!config) return false;
+      for (const [groupKey, layerIds] of Object.entries(config.groups)) {
+        if (layerIds.includes(id)) {
+          const grpCfg = GROUP_CONFIG[groupKey];
+          if (grpCfg?.exclusive) return true;
+        }
+      }
+      return false;
+    },
     [config],
   );
 

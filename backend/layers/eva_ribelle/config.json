@@ -255,7 +255,7 @@
       "offset_x": 110,
       "offset_y": 342,
       "visible_by_default": true,
-      "always_visible": false,
+      "always_visible": true,
       "group": "base_color"
     },
     {
@@ -311,13 +311,13 @@
   },
   "rules": {
     "always_visible": [
+      "er_01_base_ribelle_stealth_grey",
       "background"
     ],
     "mutually_exclusive": [
       [
         "er_13_eva_tricolore",
-        "er_12_eva_rosso_corsa",
-        "er_01_base_ribelle_stealth_grey"
+        "er_12_eva_rosso_corsa"
       ],
       [
         "er_52_standard_suspensions",
@@ -339,12 +339,6 @@
       ]
     ],
     "dependencies": {
-      "er_13_eva_tricolore": [
-        "er_01_base_ribelle_stealth_grey"
-      ],
-      "er_12_eva_rosso_corsa": [
-        "er_01_base_ribelle_stealth_grey"
-      ],
       "er_41_stickers_kit_rs_sport": [
         "er_40_rs_version"
       ]
