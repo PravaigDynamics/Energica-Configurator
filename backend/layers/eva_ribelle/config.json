@@ -255,7 +255,7 @@
       "offset_x": 110,
       "offset_y": 342,
       "visible_by_default": true,
-      "always_visible": true,
+      "always_visible": false,
       "group": "base_color"
     },
     {
@@ -311,7 +311,6 @@
   },
   "rules": {
     "always_visible": [
-      "er_01_base_ribelle_stealth_grey",
       "background"
     ],
     "mutually_exclusive": [
