@@ -341,6 +341,12 @@
     "dependencies": {
       "er_41_stickers_kit_rs_sport": [
         "er_40_rs_version"
+      ],
+      "er_92_bags_plates_red": [
+        "er_91_side_bags_kit"
+      ],
+      "er_93_bags_plates_gun_metal": [
+        "er_91_side_bags_kit"
       ]
     }
   }

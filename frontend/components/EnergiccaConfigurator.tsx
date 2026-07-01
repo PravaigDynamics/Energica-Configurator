@@ -837,12 +837,18 @@ export default function EnergiccaConfigurator({
                           const isActive = alwaysVisible.has(layer.id) && isExclusive
                             ? !layers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
                             : visibleLayers.has(layer.id);
+                          // Disable if any required dependency is not currently selected
+                          const deps = config?.rules.dependencies[layer.id] ?? [];
+                          const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
                           return (
                           <OptionRow
                             key={layer.id}
                             layer={layer}
                             active={isActive}
-                            disabled={alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id)}
+                            disabled={
+                              (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
+                              || depsUnmet
+                            }
                             exclusive={isExclusive}
                             onToggle={() => toggleLayer(layer.id, isExclusive, layers.map((l) => l.id))}
                           />
