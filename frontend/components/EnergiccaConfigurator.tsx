@@ -812,6 +812,10 @@ export default function EnergiccaConfigurator({
             ) : (
               <div style={S.configPaneInner}>
                 {groupedLayers.map(([groupKey, layers]) => {
+                  // "bags_plates" (and any future child groups) are rendered inline
+                  // inside their parent group, not as standalone sections.
+                  if (groupKey === "bags_plates") return null;
+
                   const grpCfg = GROUP_CONFIG[groupKey] ?? {
                     label: groupKey.replace(/_/g, " ").toUpperCase(),
                     description: "",
@@ -823,6 +827,37 @@ export default function EnergiccaConfigurator({
                     (config?.rules.mutually_exclusive.some((g) =>
                       g.includes(layers[0]?.id ?? ""),
                     ) ?? false);
+
+                  // Inline child layers that depend on a layer in this group
+                  // (e.g. bag plate colours depend on side bags kit)
+                  const childGroups = groupedLayers.filter(([ck, cl]) =>
+                    ck !== groupKey &&
+                    cl.length > 0 &&
+                    (config?.rules.dependencies[cl[0].id] ?? []).some((dep) =>
+                      layers.some((l) => l.id === dep),
+                    ),
+                  );
+
+                  const renderOptionRow = (layer: LayerMeta, excl: boolean, peers: LayerMeta[]) => {
+                    const isActive = alwaysVisible.has(layer.id) && excl
+                      ? !peers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
+                      : visibleLayers.has(layer.id);
+                    const deps = config?.rules.dependencies[layer.id] ?? [];
+                    const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
+                    return (
+                      <OptionRow
+                        key={layer.id}
+                        layer={layer}
+                        active={isActive}
+                        disabled={
+                          (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
+                          || depsUnmet
+                        }
+                        exclusive={excl}
+                        onToggle={() => toggleLayer(layer.id, excl, peers.map((l) => l.id))}
+                      />
+                    );
+                  };
 
                   return (
                     <section key={groupKey} style={S.section}>
@@ -836,32 +871,33 @@ export default function EnergiccaConfigurator({
                         aria-label={grpCfg.label}
                       >
                         {layers.map((layer) => {
-                          // For always-visible layers in an exclusive group (e.g. Stealth Grey base),
-                          // "active" means no sibling overlay is selected — not just "is in visibleLayers"
-                          // (which is always true for always-visible layers).
-                          const isActive = alwaysVisible.has(layer.id) && isExclusive
-                            ? !layers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
-                            : visibleLayers.has(layer.id);
-                          // Disable if any required dependency is not currently selected
-                          const deps = config?.rules.dependencies[layer.id] ?? [];
-                          const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
+                          const row = renderOptionRow(layer, isExclusive, layers);
+                          // After this layer, inject any child group whose dep is this layer
+                          const children = childGroups.filter(([, cl]) =>
+                            (config?.rules.dependencies[cl[0].id] ?? []).includes(layer.id),
+                          );
+                          if (children.length === 0) return row;
                           return (
-                          <OptionRow
-                            key={layer.id}
-                            layer={layer}
-                            active={isActive}
-                            disabled={
-                              (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
-                              || depsUnmet
-                            }
-                            exclusive={isExclusive}
-                            onToggle={() => toggleLayer(layer.id, isExclusive, layers.map((l) => l.id))}
-                          />
+                            <React.Fragment key={layer.id}>
+                              {row}
+                              {children.map(([ck, cl]) => {
+                                const childExcl = GROUP_CONFIG[ck]?.exclusive ??
+                                  (config?.rules.mutually_exclusive.some((g) => g.includes(cl[0].id)) ?? false);
+                                const parentSelected = visibleLayers.has(layer.id);
+                                if (!parentSelected) return null;
+                                return (
+                                  <div key={ck} style={{ paddingLeft: "var(--space-6, 24px)", marginTop: "var(--space-1, 4px)" }}>
+                                    {cl.map((cl_layer) => renderOptionRow(cl_layer, childExcl, cl))}
+                                  </div>
+                                );
+                              })}
+                            </React.Fragment>
                           );
                         })}
                       </div>
                     </section>
                   );
+
                 })}
 
                 {/* Action buttons */}
