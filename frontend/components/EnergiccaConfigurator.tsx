@@ -433,7 +433,16 @@ function useConfigurator(model: Model, apiUrl: string) {
           }
         }
 
-        setVisibleLayers(new Set(initial));
+        // Enforce dependencies on restored layers (URL may encode an invalid state)
+        const initialSet = new Set(initial);
+        for (const id of [...initialSet]) {
+          const deps = cfg.rules.dependencies[id] ?? [];
+          deps.forEach((dep) => initialSet.add(dep));
+        }
+        // Ensure always_visible layers are present
+        alwaysVisibleIds.forEach((id) => initialSet.add(id));
+
+        setVisibleLayers(initialSet);
       })
       .catch((err: Error) => {
         setError(`Could not load configuration: ${err.message}`);
@@ -540,6 +549,14 @@ function useConfigurator(model: Model, apiUrl: string) {
           if (alwaysVisible.has(layerId)) return prev;
           if (next.has(layerId)) {
             next.delete(layerId);
+            // Remove layers that depend on this one (reverse dependency cleanup)
+            if (config?.rules.dependencies) {
+              for (const [depId, deps] of Object.entries(config.rules.dependencies)) {
+                if (deps.includes(layerId) && next.has(depId)) {
+                  next.delete(depId);
+                }
+              }
+            }
           } else {
             next.add(layerId);
             // Auto-enable dependencies
