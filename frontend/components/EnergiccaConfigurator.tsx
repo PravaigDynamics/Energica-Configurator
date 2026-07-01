@@ -882,7 +882,9 @@ export default function EnergiccaConfigurator({
                       .some(([id, conflicts]) =>
                         id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
                       );
-                    if (incompatConflict) return null;
+                    // Hide options that conflict with current selection OR have unmet deps
+                    // (e.g. Sunrise Red bellypan is hidden when Sunrise Red isn't selected)
+                    if (incompatConflict || depsUnmet) return null;
                     return (
                       <OptionRow
                         key={layer.id}
@@ -890,7 +892,6 @@ export default function EnergiccaConfigurator({
                         active={isActive}
                         disabled={
                           (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
-                          || depsUnmet
                         }
                         exclusive={excl}
                         onToggle={() => toggleLayer(layer.id, excl, peers.map((l) => l.id))}
@@ -898,13 +899,16 @@ export default function EnergiccaConfigurator({
                     );
                   };
 
-                  // Hide the whole section if every option is filtered by incompatibility
-                  const visibleLayerCount = layers.filter((layer) =>
-                    !Object.entries(config?.rules.incompatibilities ?? {}).some(
-                      ([id, conflicts]) =>
+                  // Hide the whole section if every option would be filtered out
+                  const visibleLayerCount = layers.filter((layer) => {
+                    const layerDeps = config?.rules.dependencies[layer.id] ?? [];
+                    const layerDepsUnmet = layerDeps.some((dep) => !visibleLayers.has(dep));
+                    const layerIncompat = Object.entries(config?.rules.incompatibilities ?? {})
+                      .some(([id, conflicts]) =>
                         id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
-                    ),
-                  ).length;
+                      );
+                    return !layerDepsUnmet && !layerIncompat;
+                  }).length;
                   if (visibleLayerCount === 0) return null;
 
                   return (
