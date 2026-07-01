@@ -877,11 +877,12 @@ export default function EnergiccaConfigurator({
                       : visibleLayers.has(layer.id);
                     const deps = config?.rules.dependencies[layer.id] ?? [];
                     const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
-                    // Disable if an active layer is incompatible with this one
+                    // Hide (not just grey) options that are incompatible with current selection
                     const incompatConflict = Object.entries(config?.rules.incompatibilities ?? {})
                       .some(([id, conflicts]) =>
                         id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
                       );
+                    if (incompatConflict) return null;
                     return (
                       <OptionRow
                         key={layer.id}
@@ -890,13 +891,21 @@ export default function EnergiccaConfigurator({
                         disabled={
                           (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
                           || depsUnmet
-                          || incompatConflict
                         }
                         exclusive={excl}
                         onToggle={() => toggleLayer(layer.id, excl, peers.map((l) => l.id))}
                       />
                     );
                   };
+
+                  // Hide the whole section if every option is filtered by incompatibility
+                  const visibleLayerCount = layers.filter((layer) =>
+                    !Object.entries(config?.rules.incompatibilities ?? {}).some(
+                      ([id, conflicts]) =>
+                        id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
+                    ),
+                  ).length;
+                  if (visibleLayerCount === 0) return null;
 
                   return (
                     <section key={groupKey} style={S.section}>
