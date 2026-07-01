@@ -449,6 +449,18 @@ function useConfigurator(model: Model, apiUrl: string) {
           const deps = cfg.rules.dependencies[id] ?? [];
           deps.forEach((dep) => initialSet.add(dep));
         }
+        // Enforce incompatibilities: remove any layer that conflicts with another active layer.
+        // Iterate until stable (removing one may reveal another conflict).
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (const [id, conflicts] of Object.entries(cfg.rules.incompatibilities ?? {})) {
+            if (initialSet.has(id) && (conflicts as string[]).some((c) => initialSet.has(c))) {
+              initialSet.delete(id);
+              changed = true;
+            }
+          }
+        }
         // Ensure always_visible layers are present
         alwaysVisibleIds.forEach((id) => initialSet.add(id));
 
@@ -553,6 +565,12 @@ function useConfigurator(model: Model, apiUrl: string) {
             // Auto-enable dependencies (e.g. base layer required by an overlay)
             const deps = config?.rules.dependencies[layerId] ?? [];
             deps.forEach((dep) => next.add(dep));
+            // Remove any layers now incompatible with the newly added layer
+            for (const [id, conflicts] of Object.entries(config?.rules.incompatibilities ?? {})) {
+              if (next.has(id) && (conflicts as string[]).includes(layerId)) {
+                next.delete(id);
+              }
+            }
           }
         } else {
           // Checkbox behaviour — never remove always-visible layers
@@ -572,6 +590,12 @@ function useConfigurator(model: Model, apiUrl: string) {
             // Auto-enable dependencies
             const deps = config?.rules.dependencies[layerId] ?? [];
             deps.forEach((dep) => next.add(dep));
+            // Remove any layers now incompatible with the newly added layer
+            for (const [id, conflicts] of Object.entries(config?.rules.incompatibilities ?? {})) {
+              if (next.has(id) && (conflicts as string[]).includes(layerId)) {
+                next.delete(id);
+              }
+            }
           }
         }
 
