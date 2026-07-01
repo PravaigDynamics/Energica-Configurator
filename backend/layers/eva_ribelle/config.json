@@ -304,7 +304,9 @@
       "er_24_frame_black",
       "er_80_windscreen_kit",
       "er_81_splash_guard",
-      "er_91_side_bags_kit",
+      "er_91_side_bags_kit"
+    ],
+    "bags_plates": [
       "er_92_bags_plates_red",
       "er_93_bags_plates_gun_metal"
     ]

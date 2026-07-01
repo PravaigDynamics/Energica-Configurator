@@ -108,6 +108,11 @@ const GROUP_CONFIG: Record<string, GroupConfig> = {
     description: "Performance and touring additions.",
     exclusive: false,
   },
+  bags_plates: {
+    label: "BAG PLATE COLOUR",
+    description: "Choose a colour for the side bag plates. Requires Side Bags Kit.",
+    exclusive: true,
+  },
   other: {
     label: "ACCESSORIES",
     description: "Additional components.",
