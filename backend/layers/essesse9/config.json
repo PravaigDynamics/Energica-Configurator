@@ -227,7 +227,7 @@
     },
     {
       "id": "es_25_bellypan_bormio_yellow_stripes",
-      "name": "ES-25-BELLYPAN BORMIO YELLOW STRIPES",
+      "name": "ES-25-BELLYPAN BORMIO ICE YELLOW STRIPES",
       "filename": "es_25_bellypan_bormio_yellow_stripes.png",
       "z_index": 20,
       "offset_x": 1470,
@@ -260,7 +260,7 @@
     },
     {
       "id": "es_22_bellypan_bormio_grey_stripes",
-      "name": "ES-22-BELLYPAN BORMIO GREY STRIPES",
+      "name": "ES-22-BELLYPAN BORMIO ICE GREY STRIPES",
       "filename": "es_22_bellypan_bormio_grey_stripes.png",
       "z_index": 23,
       "offset_x": 2158,
@@ -329,7 +329,7 @@
     "base_color": [
       "es_13_esseesse9_sunrise_red",
       "es_14_esseesse9_riviera_green",
-      "es_02_cnc_titanium_grey"
+      "es_01_base_esseesse9_bormio_ice"
     ],
     "bellypan": [
       "es_22_bellypan_bormio_grey_stripes",
@@ -360,24 +360,30 @@
       "es_73_kit_ergal_screws_black"
     ],
     "optional_upgrades": [
-      "es_60_rs_version",
       "es_84_windscreen_kit",
       "es_85_splash_guard",
-      "es_96_side_bags_kit",
+      "es_96_side_bags_kit"
+    ],
+    "cnc_options": [
+      "es_02_cnc_titanium_grey"
+    ],
+    "bags_plates": [
       "es_97_bags_plates_gun_metal",
-      "er_98_bags_plates_blue",
-      "background"
+      "er_98_bags_plates_blue"
+    ],
+    "rs_options": [
+      "es_60_rs_version"
     ]
   },
   "rules": {
     "always_visible": [
-      "es_01_base_esseesse9_bormio_ice"
+      "es_01_base_esseesse9_bormio_ice",
+      "background"
     ],
     "mutually_exclusive": [
       [
         "es_13_esseesse9_sunrise_red",
-        "es_14_esseesse9_riviera_green",
-        "es_02_cnc_titanium_grey"
+        "es_14_esseesse9_riviera_green"
       ],
       [
         "es_22_bellypan_bormio_grey_stripes",
@@ -407,17 +413,51 @@
       ]
     ],
     "dependencies": {
-      "es_13_esseesse9_sunrise_red": [
-        "es_01_base_esseesse9_bormio_ice"
+      "es_23_bellypan_sunrise_red_grey_stripes": [
+        "es_13_esseesse9_sunrise_red"
       ],
-      "es_14_esseesse9_riviera_green": [
-        "es_01_base_esseesse9_bormio_ice"
+      "es_26_bellypan_sunrise_red_yellow_stripes": [
+        "es_13_esseesse9_sunrise_red"
       ],
-      "es_02_cnc_titanium_grey": [
-        "es_01_base_esseesse9_bormio_ice"
+      "es_24_bellypan_riviera_green_grey_stripes": [
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_27_bellypan_riviera_green_yellow_stripes": [
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_97_bags_plates_gun_metal": [
+        "es_96_side_bags_kit"
+      ],
+      "er_98_bags_plates_blue": [
+        "es_96_side_bags_kit"
       ]
     },
-    "incompatibilities": {},
+    "incompatibilities": {
+      "es_02_cnc_titanium_grey": [
+        "es_13_esseesse9_sunrise_red",
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_22_bellypan_bormio_grey_stripes": [
+        "es_13_esseesse9_sunrise_red",
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_25_bellypan_bormio_yellow_stripes": [
+        "es_13_esseesse9_sunrise_red",
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_23_bellypan_sunrise_red_grey_stripes": [
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_26_bellypan_sunrise_red_yellow_stripes": [
+        "es_14_esseesse9_riviera_green"
+      ],
+      "es_24_bellypan_riviera_green_grey_stripes": [
+        "es_13_esseesse9_sunrise_red"
+      ],
+      "es_27_bellypan_riviera_green_yellow_stripes": [
+        "es_13_esseesse9_sunrise_red"
+      ]
+    },
     "any_of_dependencies": {}
   }
 }

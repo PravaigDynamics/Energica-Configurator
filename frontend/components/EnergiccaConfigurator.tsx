@@ -98,11 +98,6 @@ const GROUP_CONFIG: Record<string, GroupConfig> = {
     description: "Optional anodised ergal screw kit.",
     exclusive: true,
   },
-  rs_options: {
-    label: "RS OPTIONS",
-    description: "RS version badge and sticker kit.",
-    exclusive: false,
-  },
   optional_upgrades: {
     label: "OPTIONAL UPGRADES",
     description: "Performance and touring additions.",
@@ -112,6 +107,16 @@ const GROUP_CONFIG: Record<string, GroupConfig> = {
     label: "BAG PLATE COLOUR",
     description: "Choose a colour for the side bag plates. Requires Side Bags Kit.",
     exclusive: true,
+  },
+  cnc_options: {
+    label: "CNC FINISH",
+    description: "Optional CNC Titanium Grey finish. Available on Bormio Ice only.",
+    exclusive: true,
+  },
+  rs_options: {
+    label: "RS OPTIONS",
+    description: "RS version badge and sticker kit.",
+    exclusive: false,
   },
   other: {
     label: "ACCESSORIES",
@@ -828,13 +833,17 @@ export default function EnergiccaConfigurator({
                       g.includes(layers[0]?.id ?? ""),
                     ) ?? false);
 
-                  // Inline child layers that depend on a layer in this group
-                  // (e.g. bag plate colours depend on side bags kit)
+                  // Inline child groups: those whose first layer depends on a layer in this group,
+                  // OR whose layers are incompatible with non-Bormio-Ice colors (cnc_options).
                   const childGroups = groupedLayers.filter(([ck, cl]) =>
                     ck !== groupKey &&
                     cl.length > 0 &&
-                    (config?.rules.dependencies[cl[0].id] ?? []).some((dep) =>
-                      layers.some((l) => l.id === dep),
+                    (
+                      (config?.rules.dependencies[cl[0].id] ?? []).some((dep) =>
+                        layers.some((l) => l.id === dep),
+                      ) ||
+                      // cnc_options appears under base_color (Bormio Ice = always-visible base)
+                      (ck === "cnc_options" && groupKey === "base_color")
                     ),
                   );
 
@@ -844,6 +853,11 @@ export default function EnergiccaConfigurator({
                       : visibleLayers.has(layer.id);
                     const deps = config?.rules.dependencies[layer.id] ?? [];
                     const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
+                    // Disable if an active layer is incompatible with this one
+                    const incompatConflict = Object.entries(config?.rules.incompatibilities ?? {})
+                      .some(([id, conflicts]) =>
+                        id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
+                      );
                     return (
                       <OptionRow
                         key={layer.id}
@@ -852,6 +866,7 @@ export default function EnergiccaConfigurator({
                         disabled={
                           (alwaysVisible.has(layer.id) && !isSelectableAlwaysVisible(layer.id))
                           || depsUnmet
+                          || incompatConflict
                         }
                         exclusive={excl}
                         onToggle={() => toggleLayer(layer.id, excl, peers.map((l) => l.id))}
@@ -883,7 +898,12 @@ export default function EnergiccaConfigurator({
                               {children.map(([ck, cl]) => {
                                 const childExcl = GROUP_CONFIG[ck]?.exclusive ??
                                   (config?.rules.mutually_exclusive.some((g) => g.includes(cl[0].id)) ?? false);
-                                const parentSelected = visibleLayers.has(layer.id);
+                                // For cnc_options: show under Bormio Ice (always-visible base),
+                                // which is "active" when no overlay color is selected.
+                                const isBormioIceActive = alwaysVisible.has(layer.id) && isExclusive
+                                  ? !layers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
+                                  : visibleLayers.has(layer.id);
+                                const parentSelected = isBormioIceActive;
                                 if (!parentSelected) return null;
                                 return (
                                   <div key={ck} style={{ paddingLeft: "var(--space-6, 24px)", marginTop: "var(--space-1, 4px)" }}>

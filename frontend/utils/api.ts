@@ -23,6 +23,7 @@ export interface ConfigRules {
   always_visible: string[];
   mutually_exclusive: string[][];
   dependencies: Record<string, string[]>;
+  incompatibilities: Record<string, string[]>;
 }
 
 export interface ConfigSchema {
