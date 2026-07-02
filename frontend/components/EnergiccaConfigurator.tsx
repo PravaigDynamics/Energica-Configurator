@@ -775,9 +775,15 @@ export default function EnergiccaConfigurator({
       result.push([groupKey, layers]);
     }
 
-    // Catch any ungrouped, non-structural layers
+    // Collect all layer IDs that are auto-triggered via dependencies (not directly user-selectable).
+    // These should not appear in any UI section even if ungrouped.
+    const autoTriggered = new Set(
+      Object.values(config.rules.dependencies).flat(),
+    );
+
+    // Catch any ungrouped, non-structural, non-auto-triggered layers
     const ungrouped = config.layers.filter(
-      (l) => !rendered.has(l.id) && !alwaysVisible.has(l.id),
+      (l) => !rendered.has(l.id) && !alwaysVisible.has(l.id) && !autoTriggered.has(l.id),
     );
     if (ungrouped.length > 0) result.push(["other", ungrouped]);
 
