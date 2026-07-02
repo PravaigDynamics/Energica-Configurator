@@ -888,12 +888,24 @@ export default function EnergiccaConfigurator({
                     ),
                   );
 
+                  // Set of all layer IDs that appear in at least one UI group (user-selectable).
+                  // Deps pointing to non-group layers are auto-triggered (e.g. rider seat) and
+                  // should not cause the parent option to be hidden when they're inactive.
+                  const groupLayerIds = new Set(
+                    Object.values(config?.groups ?? {}).flat(),
+                  );
+
                   const renderOptionRow = (layer: LayerMeta, excl: boolean, peers: LayerMeta[]) => {
                     const isActive = alwaysVisible.has(layer.id) && excl
                       ? !peers.some((l) => l.id !== layer.id && visibleLayers.has(l.id))
                       : visibleLayers.has(layer.id);
                     const deps = config?.rules.dependencies[layer.id] ?? [];
-                    const depsUnmet = deps.some((dep) => !visibleLayers.has(dep));
+                    // Only treat a dep as "unmet" if it's a user-selectable layer (in a UI group).
+                    // Auto-triggered layers (e.g. rider seats activated by a seat option) are not
+                    // in any group and must not cause the parent option to be hidden.
+                    const depsUnmet = deps.some(
+                      (dep) => groupLayerIds.has(dep) && !visibleLayers.has(dep),
+                    );
                     // Hide (not just grey) options that are incompatible with current selection
                     const incompatConflict = Object.entries(config?.rules.incompatibilities ?? {})
                       .some(([id, conflicts]) =>
@@ -919,7 +931,9 @@ export default function EnergiccaConfigurator({
                   // Hide the whole section if every option would be filtered out
                   const visibleLayerCount = layers.filter((layer) => {
                     const layerDeps = config?.rules.dependencies[layer.id] ?? [];
-                    const layerDepsUnmet = layerDeps.some((dep) => !visibleLayers.has(dep));
+                    const layerDepsUnmet = layerDeps.some(
+                      (dep) => groupLayerIds.has(dep) && !visibleLayers.has(dep),
+                    );
                     const layerIncompat = Object.entries(config?.rules.incompatibilities ?? {})
                       .some(([id, conflicts]) =>
                         id === layer.id && (conflicts as string[]).some((c) => visibleLayers.has(c)),
