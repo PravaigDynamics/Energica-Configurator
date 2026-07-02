@@ -466,6 +466,17 @@ function useConfigurator(model: Model, apiUrl: string) {
             }
           }
         }
+        // Ensure each mutually_exclusive group has at least its default member selected.
+        // URL state may omit a required layer (e.g. seat) if a previous session cleared it.
+        for (const group of cfg.rules.mutually_exclusive ?? []) {
+          const hasOne = group.some((id) => initialSet.has(id));
+          if (!hasOne) {
+            const defaultMember = group.find(
+              (id) => cfg.layers.find((l) => l.id === id)?.visible_by_default,
+            );
+            if (defaultMember) initialSet.add(defaultMember);
+          }
+        }
         // Ensure always_visible layers are present
         alwaysVisibleIds.forEach((id) => initialSet.add(id));
 
