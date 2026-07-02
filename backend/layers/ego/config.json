@@ -95,14 +95,14 @@
     },
     {
       "id": "eg_68_cover_corsaclienti_red_copia",
-      "name": "EG-68-COVER CorsaClienti RED copia",
+      "name": "EG-68-COVER CorsaClienti RED",
       "filename": "eg_68_cover_corsaclienti_red_copia.png",
       "z_index": 8,
       "offset_x": 783,
       "offset_y": 967,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "covers"
     },
     {
       "id": "eg_67_cover_corsaclienti_black",
@@ -113,7 +113,7 @@
       "offset_y": 967,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "covers"
     },
     {
       "id": "eg_66_cover_corsaclienti_white",
@@ -124,7 +124,7 @@
       "offset_y": 967,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "covers"
     },
     {
       "id": "eg_65_cover_corsaclienti_grey",
@@ -135,40 +135,40 @@
       "offset_y": 967,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "covers"
     },
     {
       "id": "eg_64_passenger_seat_ego_tech_green",
-      "name": "EG-64-PASSENGER SEAT EGO TECH GREEN",
+      "name": "EG-64-EGO TECH GREEN SEAT",
       "filename": "eg_64_passenger_seat_ego_tech_green.png",
       "z_index": 12,
       "offset_x": 797,
       "offset_y": 948,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "passenger_seat"
     },
     {
       "id": "eg_63_passenger_seat_ego_tech_red",
-      "name": "EG-63-PASSENGER SEAT EGO TECH RED",
+      "name": "EG-63-EGO TECH RED SEAT",
       "filename": "eg_63_passenger_seat_ego_tech_red.png",
       "z_index": 13,
       "offset_x": 797,
       "offset_y": 948,
       "visible_by_default": false,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "passenger_seat"
     },
     {
       "id": "eg_62_passenger_seat_standard",
-      "name": "*EG-62-PASSENGER SEAT STANDARD",
+      "name": "*EG-62-STANDARD SEAT",
       "filename": "eg_62_passenger_seat_standard.png",
       "z_index": 14,
       "offset_x": 797,
       "offset_y": 948,
       "visible_by_default": true,
       "always_visible": false,
-      "group": "optional_upgrades"
+      "group": "passenger_seat"
     },
     {
       "id": "eg_51_rider_seat_ego_tech_green",
@@ -249,7 +249,7 @@
     },
     {
       "id": "eg_24_frame_black",
-      "name": "EG-24-FRAME BLACK ",
+      "name": "EG-24-FRAME BLACK",
       "filename": "eg_24_frame_black.png",
       "z_index": 22,
       "offset_x": 1744,
@@ -299,29 +299,32 @@
       "offset_x": -3,
       "offset_y": 0,
       "visible_by_default": true,
-      "always_visible": false,
+      "always_visible": true,
       "group": "optional_upgrades"
     }
   ],
   "groups": {
     "base_color": [
       "eg_13_tricolore",
-      "eg_12_ego_rosso_corsa"
+      "eg_12_ego_rosso_corsa",
+      "eg_01_base_ego_metal_black"
+    ],
+    "passenger_seat": [
+      "eg_62_passenger_seat_standard",
+      "eg_63_passenger_seat_ego_tech_red",
+      "eg_64_passenger_seat_ego_tech_green"
+    ],
+    "covers": [
+      "eg_65_cover_corsaclienti_grey",
+      "eg_66_cover_corsaclienti_white",
+      "eg_67_cover_corsaclienti_black",
+      "eg_68_cover_corsaclienti_red_copia"
     ],
     "carbon_parts": [
       "eg_35_front_mudguard_carbon",
       "eg_36_rear_mudguard_carbon",
       "eg_37_bellypan_carbon",
       "eg_38_undertail_cover_carbon"
-    ],
-    "passenger_seat": [
-      "eg_62_passenger_seat_standard",
-      "eg_63_passenger_seat_ego_tech_red",
-      "eg_64_passenger_seat_ego_tech_green",
-      "eg_65_cover_corsaclienti_grey",
-      "eg_66_cover_corsaclienti_white",
-      "eg_67_cover_corsaclienti_black",
-      "eg_68_cover_corsaclienti_red_copia"
     ],
     "suspension": [
       "eg_78_standard_suspensions",
@@ -339,15 +342,13 @@
     ],
     "optional_upgrades": [
       "eg_24_frame_black",
-      "eg_49_rs_version",
-      "eg_50_rider_seat_ego_tech_red",
-      "eg_51_rider_seat_ego_tech_green",
-      "background"
+      "eg_49_rs_version"
     ]
   },
   "rules": {
     "always_visible": [
-      "eg_01_base_ego_metal_black"
+      "eg_01_base_ego_metal_black",
+      "background"
     ],
     "mutually_exclusive": [
       [
@@ -355,13 +356,11 @@
         "eg_12_ego_rosso_corsa"
       ],
       [
-        "eg_50_rider_seat_ego_tech_red",
-        "eg_51_rider_seat_ego_tech_green"
-      ],
-      [
         "eg_62_passenger_seat_standard",
         "eg_63_passenger_seat_ego_tech_red",
-        "eg_64_passenger_seat_ego_tech_green",
+        "eg_64_passenger_seat_ego_tech_green"
+      ],
+      [
         "eg_65_cover_corsaclienti_grey",
         "eg_66_cover_corsaclienti_white",
         "eg_67_cover_corsaclienti_black",
@@ -383,38 +382,53 @@
       ]
     ],
     "dependencies": {
-      "eg_13_tricolore": [
-        "eg_01_base_ego_metal_black"
+      "eg_63_passenger_seat_ego_tech_red": [
+        "eg_50_rider_seat_ego_tech_red"
       ],
-      "eg_12_ego_rosso_corsa": [
-        "eg_01_base_ego_metal_black"
-      ]
-    },
-    "any_of_dependencies": {
-      "eg_50_rider_seat_ego_tech_red": [
-        "eg_63_passenger_seat_ego_tech_red",
-        "eg_65_cover_corsaclienti_grey",
-        "eg_66_cover_corsaclienti_white",
-        "eg_67_cover_corsaclienti_black",
-        "eg_68_cover_corsaclienti_red_copia"
-      ],
-      "eg_51_rider_seat_ego_tech_green": [
-        "eg_64_passenger_seat_ego_tech_green",
-        "eg_65_cover_corsaclienti_grey",
-        "eg_66_cover_corsaclienti_white",
-        "eg_67_cover_corsaclienti_black",
-        "eg_68_cover_corsaclienti_red_copia"
+      "eg_64_passenger_seat_ego_tech_green": [
+        "eg_51_rider_seat_ego_tech_green"
       ]
     },
     "incompatibilities": {
-      "eg_50_rider_seat_ego_tech_red": [
+      "eg_62_passenger_seat_standard": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ],
+      "eg_63_passenger_seat_ego_tech_red": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ],
+      "eg_64_passenger_seat_ego_tech_green": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ],
+      "eg_65_cover_corsaclienti_grey": [
         "eg_62_passenger_seat_standard",
+        "eg_63_passenger_seat_ego_tech_red",
         "eg_64_passenger_seat_ego_tech_green"
       ],
-      "eg_51_rider_seat_ego_tech_green": [
+      "eg_66_cover_corsaclienti_white": [
         "eg_62_passenger_seat_standard",
-        "eg_63_passenger_seat_ego_tech_red"
+        "eg_63_passenger_seat_ego_tech_red",
+        "eg_64_passenger_seat_ego_tech_green"
+      ],
+      "eg_67_cover_corsaclienti_black": [
+        "eg_62_passenger_seat_standard",
+        "eg_63_passenger_seat_ego_tech_red",
+        "eg_64_passenger_seat_ego_tech_green"
+      ],
+      "eg_68_cover_corsaclienti_red_copia": [
+        "eg_62_passenger_seat_standard",
+        "eg_63_passenger_seat_ego_tech_red",
+        "eg_64_passenger_seat_ego_tech_green"
       ]
-    }
+    },
+    "any_of_dependencies": {}
   }
 }

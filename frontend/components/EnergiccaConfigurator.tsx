@@ -79,8 +79,13 @@ const GROUP_CONFIG: Record<string, GroupConfig> = {
     exclusive: true,
   },
   passenger_seat: {
-    label: "PASSENGER SEAT",
-    description: "Select passenger seat or cover type.",
+    label: "SEAT",
+    description: "Choose your seat configuration.",
+    exclusive: true,
+  },
+  covers: {
+    label: "COVER CorsaClienti",
+    description: "Racing seat cover. Replaces the active seat when selected.",
     exclusive: true,
   },
   carbon_parts: {
@@ -565,10 +570,16 @@ function useConfigurator(model: Model, apiUrl: string) {
             // Auto-enable dependencies (e.g. base layer required by an overlay)
             const deps = config?.rules.dependencies[layerId] ?? [];
             deps.forEach((dep) => next.add(dep));
-            // Remove any layers now incompatible with the newly added layer
+            // Remove any layers now incompatible with the newly added layer,
+            // and cascade-remove layers that depended on the removed layer.
             for (const [id, conflicts] of Object.entries(config?.rules.incompatibilities ?? {})) {
               if (next.has(id) && (conflicts as string[]).includes(layerId)) {
                 next.delete(id);
+                if (config?.rules.dependencies) {
+                  for (const [depId, depDeps] of Object.entries(config.rules.dependencies)) {
+                    if (depDeps.includes(id) && next.has(depId)) next.delete(depId);
+                  }
+                }
               }
             }
           }
@@ -590,10 +601,16 @@ function useConfigurator(model: Model, apiUrl: string) {
             // Auto-enable dependencies
             const deps = config?.rules.dependencies[layerId] ?? [];
             deps.forEach((dep) => next.add(dep));
-            // Remove any layers now incompatible with the newly added layer
+            // Remove any layers now incompatible with the newly added layer,
+            // and cascade-remove layers that depended on the removed layer.
             for (const [id, conflicts] of Object.entries(config?.rules.incompatibilities ?? {})) {
               if (next.has(id) && (conflicts as string[]).includes(layerId)) {
                 next.delete(id);
+                if (config?.rules.dependencies) {
+                  for (const [depId, depDeps] of Object.entries(config.rules.dependencies)) {
+                    if (depDeps.includes(id) && next.has(depId)) next.delete(depId);
+                  }
+                }
               }
             }
           }
