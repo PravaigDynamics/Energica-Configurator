@@ -209,7 +209,7 @@
       "filename": "es_27_bellypan_riviera_green_yellow_stripes.png",
       "z_index": 18,
       "offset_x": 1470,
-      "offset_y": 1072,
+      "offset_y": 910,
       "visible_by_default": false,
       "always_visible": false,
       "group": "optional_upgrades"
@@ -220,7 +220,7 @@
       "filename": "es_26_bellypan_sunrise_red_yellow_stripes.png",
       "z_index": 19,
       "offset_x": 1470,
-      "offset_y": 1072,
+      "offset_y": 914,
       "visible_by_default": false,
       "always_visible": false,
       "group": "optional_upgrades"
@@ -230,8 +230,8 @@
       "name": "ES-25-BELLYPAN BORMIO ICE YELLOW STRIPES",
       "filename": "es_25_bellypan_bormio_yellow_stripes.png",
       "z_index": 20,
-      "offset_x": 1470,
-      "offset_y": 1072,
+      "offset_x": 2158,
+      "offset_y": 914,
       "visible_by_default": false,
       "always_visible": false,
       "group": "optional_upgrades"
@@ -242,7 +242,7 @@
       "filename": "es_24_bellypan_riviera_green_grey_stripes.png",
       "z_index": 21,
       "offset_x": 1470,
-      "offset_y": 1072,
+      "offset_y": 910,
       "visible_by_default": false,
       "always_visible": false,
       "group": "optional_upgrades"
@@ -253,7 +253,7 @@
       "filename": "es_23_bellypan_sunrise_red_grey_stripes.png",
       "z_index": 22,
       "offset_x": 1470,
-      "offset_y": 1072,
+      "offset_y": 914,
       "visible_by_default": false,
       "always_visible": false,
       "group": "optional_upgrades"
