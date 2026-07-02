@@ -561,31 +561,34 @@ function useConfigurator(model: Model, apiUrl: string) {
           const wasActive = next.has(layerId) && !alwaysVisible.has(layerId);
 
           // Helper: delete a layer and cascade-remove anything that depended on it.
-          const clearWithDeps = (id: string) => {
+          // cascadeOwnDeps=true: also clears auto-triggered deps of the cleared layer
+          // (used within same group, e.g. seat→seat so rider seat switches correctly).
+          // cascadeOwnDeps=false: only clears the layer itself
+          // (used cross-group, e.g. cover→seat so rider seat stays active).
+          const clearWithDeps = (id: string, cascadeOwnDeps = true) => {
             if (alwaysVisible.has(id)) return;
             next.delete(id);
             if (config?.rules.dependencies) {
-              // Clear layers whose dep list includes id (id was a required dep of something else)
               for (const [depId, depDeps] of Object.entries(config.rules.dependencies)) {
                 if (depDeps.includes(id) && next.has(depId)) next.delete(depId);
               }
-              // Also clear what id itself auto-triggered (its own deps, e.g. rider seat)
-              for (const ownDep of config.rules.dependencies[id] ?? []) {
-                if (!alwaysVisible.has(ownDep)) next.delete(ownDep);
+              if (cascadeOwnDeps) {
+                for (const ownDep of config.rules.dependencies[id] ?? []) {
+                  if (!alwaysVisible.has(ownDep)) next.delete(ownDep);
+                }
               }
             }
           };
 
-          // Clear UI-group peers.
-          peers.forEach(clearWithDeps);
+          // Clear UI-group peers (same group → cascade own deps so rider seat switches).
+          peers.forEach((id) => clearWithDeps(id, true));
 
-          // Also clear cross-group peers from mutually_exclusive (e.g. covers group
-          // shares an exclusive list with seat group so selecting a cover clears the
-          // active seat and vice-versa, without needing incompatibility rules).
+          // Clear cross-group peers (cover→seat or seat→cover) without cascading own deps
+          // so that auto-triggered rider seats stay active when a cover replaces the passenger seat.
           const exclusivePeers = exclusiveGroupOf(layerId) ?? [];
           exclusivePeers
             .filter((id) => !peers.includes(id))
-            .forEach(clearWithDeps);
+            .forEach((id) => clearWithDeps(id, false));
 
           if (!(wasActive && !isRequired)) {
             next.add(layerId);
