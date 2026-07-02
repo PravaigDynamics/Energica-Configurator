@@ -565,8 +565,13 @@ function useConfigurator(model: Model, apiUrl: string) {
             if (alwaysVisible.has(id)) return;
             next.delete(id);
             if (config?.rules.dependencies) {
+              // Clear layers whose dep list includes id (id was a required dep of something else)
               for (const [depId, depDeps] of Object.entries(config.rules.dependencies)) {
                 if (depDeps.includes(id) && next.has(depId)) next.delete(depId);
+              }
+              // Also clear what id itself auto-triggered (its own deps, e.g. rider seat)
+              for (const ownDep of config.rules.dependencies[id] ?? []) {
+                if (!alwaysVisible.has(ownDep)) next.delete(ownDep);
               }
             }
           };
