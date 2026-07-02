@@ -590,7 +590,17 @@ function useConfigurator(model: Model, apiUrl: string) {
             .filter((id) => !peers.includes(id))
             .forEach((id) => clearWithDeps(id, false));
 
-          if (!(wasActive && !isRequired)) {
+          if (wasActive && !isRequired) {
+            // Deselected an optional layer (e.g. a cover). Restore the default from
+            // any cross-group exclusive peers so the group is never left empty.
+            const exclusivePeers = exclusiveGroupOf(layerId) ?? [];
+            const crossGroupDefault = exclusivePeers
+              .filter((id) => !peers.includes(id))
+              .find((id) => config?.layers.find((l) => l.id === id)?.visible_by_default);
+            if (crossGroupDefault) {
+              next.add(crossGroupDefault);
+            }
+          } else {
             next.add(layerId);
             // Auto-enable dependencies (e.g. base layer required by an overlay)
             const deps = config?.rules.dependencies[layerId] ?? [];
