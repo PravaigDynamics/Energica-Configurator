@@ -552,18 +552,35 @@ function useConfigurator(model: Model, apiUrl: string) {
           // can leave stale selections when the rules don't cover every sibling.
           const peers = groupPeers ?? exclusiveGroupOf(layerId) ?? [];
 
-          // A group is "required" (must always have exactly one active member) if any
-          // of its peers is visible_by_default. Optional groups (e.g. ergal screws,
-          // where neither option is on by default) support deselecting the active
-          // option by clicking it again, returning to "none selected".
+          // isRequired is scoped to the UI group only (groupPeers), not cross-group
+          // exclusive peers — so optional groups like covers can still be deselected
+          // even when they share a mutually_exclusive list with a required group (seats).
           const isRequired = peers.some(
             (id) => config?.layers.find((l) => l.id === id)?.visible_by_default,
           );
           const wasActive = next.has(layerId) && !alwaysVisible.has(layerId);
 
-          peers.forEach((id) => {
-            if (!alwaysVisible.has(id)) next.delete(id);
-          });
+          // Helper: delete a layer and cascade-remove anything that depended on it.
+          const clearWithDeps = (id: string) => {
+            if (alwaysVisible.has(id)) return;
+            next.delete(id);
+            if (config?.rules.dependencies) {
+              for (const [depId, depDeps] of Object.entries(config.rules.dependencies)) {
+                if (depDeps.includes(id) && next.has(depId)) next.delete(depId);
+              }
+            }
+          };
+
+          // Clear UI-group peers.
+          peers.forEach(clearWithDeps);
+
+          // Also clear cross-group peers from mutually_exclusive (e.g. covers group
+          // shares an exclusive list with seat group so selecting a cover clears the
+          // active seat and vice-versa, without needing incompatibility rules).
+          const exclusivePeers = exclusiveGroupOf(layerId) ?? [];
+          exclusivePeers
+            .filter((id) => !peers.includes(id))
+            .forEach(clearWithDeps);
 
           if (!(wasActive && !isRequired)) {
             next.add(layerId);
