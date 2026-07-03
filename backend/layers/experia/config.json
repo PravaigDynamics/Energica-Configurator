@@ -211,12 +211,13 @@
       "offset_x": 0,
       "offset_y": 0,
       "visible_by_default": true,
-      "always_visible": false,
+      "always_visible": true,
       "group": "optional_upgrades"
     }
   ],
   "groups": {
     "base_color": [
+      "ex_01_base_experia_metal_black",
       "ex_13_experia_white_flame",
       "ex_12_experia_bormio_ice"
     ],
@@ -243,13 +244,13 @@
       "ex_85_handguards",
       "ex_96_splash_guard",
       "ex_107_top_case_kit",
-      "ex_108_side_bags_kit",
-      "background"
+      "ex_108_side_bags_kit"
     ]
   },
   "rules": {
     "always_visible": [
-      "ex_01_base_experia_metal_black"
+      "ex_01_base_experia_metal_black",
+      "background"
     ],
     "mutually_exclusive": [
       [
