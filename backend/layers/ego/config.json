@@ -260,7 +260,7 @@
     },
     {
       "id": "eg_13_tricolore",
-      "name": "EG-13-TRICOLORE",
+      "name": "EGO TRICOLORE",
       "filename": "eg_13_tricolore.png",
       "z_index": 23,
       "offset_x": 670,
@@ -271,7 +271,7 @@
     },
     {
       "id": "eg_12_ego_rosso_corsa",
-      "name": "EG-12-EGO ROSSO CORSA",
+      "name": "EGO ROSSO CORSA",
       "filename": "eg_12_ego_rosso_corsa.png",
       "z_index": 24,
       "offset_x": 685,
@@ -282,7 +282,7 @@
     },
     {
       "id": "eg_01_base_ego_metal_black",
-      "name": "#EG-01 BASE-EGO METAL BLACK",
+      "name": "EGO METAL BLACK",
       "filename": "eg_01_base_ego_metal_black.png",
       "z_index": 25,
       "offset_x": 110,
