@@ -227,7 +227,7 @@
     },
     {
       "id": "er_13_eva_tricolore",
-      "name": "ER-13-EVA TRICOLORE",
+      "name": "EVA RIBELLE TRICOLORE",
       "filename": "er_13_eva_tricolore.png",
       "z_index": 20,
       "offset_x": 753,
@@ -238,7 +238,7 @@
     },
     {
       "id": "er_12_eva_rosso_corsa",
-      "name": "ER-12-EVA ROSSO CORSA",
+      "name": "EVA RIBELLE ROSSO CORSA",
       "filename": "er_12_eva_rosso_corsa.png",
       "z_index": 21,
       "offset_x": 2165,
@@ -249,7 +249,7 @@
     },
     {
       "id": "er_01_base_ribelle_stealth_grey",
-      "name": "#ER-01 BASE-RIBELLE STEALTH GREY",
+      "name": "EVA RIBELLE STEALTH GREY",
       "filename": "er_01_base_ribelle_stealth_grey.png",
       "z_index": 22,
       "offset_x": 110,
