@@ -85,7 +85,7 @@ const GROUP_CONFIG: Record<string, GroupConfig> = {
   },
   covers: {
     label: "COVER CorsaClienti",
-    description: "Racing seat cover. Replaces the active seat when selected.",
+    description: "Racing cover for the passenger seat.",
     exclusive: true,
   },
   carbon_parts: {

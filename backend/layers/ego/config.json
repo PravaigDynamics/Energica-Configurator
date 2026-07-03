@@ -358,7 +358,9 @@
       [
         "eg_62_passenger_seat_standard",
         "eg_63_passenger_seat_ego_tech_red",
-        "eg_64_passenger_seat_ego_tech_green",
+        "eg_64_passenger_seat_ego_tech_green"
+      ],
+      [
         "eg_65_cover_corsaclienti_grey",
         "eg_66_cover_corsaclienti_white",
         "eg_67_cover_corsaclienti_black",
