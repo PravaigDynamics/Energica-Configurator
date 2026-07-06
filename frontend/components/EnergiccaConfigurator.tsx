@@ -505,9 +505,21 @@ function useConfigurator(model: Model, apiUrl: string) {
     [config],
   );
 
+  // When a cover is active, exclude the passenger seat from the render request
+  // (seat stays in visibleLayers so the UI green pointer remains, but the seat
+  // PNG must not composite behind the cover).
+  const renderLayers = useMemo(() => {
+    if (!config) return visibleLayers;
+    const coverIds = new Set(config.groups.covers ?? []);
+    const seatIds = new Set(config.groups.passenger_seat ?? []);
+    const coverActive = [...visibleLayers].some((id) => coverIds.has(id));
+    if (!coverActive) return visibleLayers;
+    return new Set([...visibleLayers].filter((id) => !seatIds.has(id)));
+  }, [visibleLayers, config]);
+
   // Trigger debounced render whenever layer selection changes
   useEffect(() => {
-    if (!config || visibleLayers.size === 0) return;
+    if (!config || renderLayers.size === 0) return;
 
     if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
 
@@ -515,7 +527,7 @@ function useConfigurator(model: Model, apiUrl: string) {
       setLoading(true);
       setError(null);
 
-      renderConfiguration(model, [...visibleLayers], apiUrl)
+      renderConfiguration(model, [...renderLayers], apiUrl)
         .then((blob) => {
           // Revoke previous object URL to avoid memory leaks
           if (prevObjectUrlRef.current) {
