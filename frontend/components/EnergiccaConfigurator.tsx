@@ -423,6 +423,7 @@ function useConfigurator(model: Model, apiUrl: string) {
     // Reset preview when switching models so stale image doesn't linger
     setPreviewUrl(null);
     setVisibleLayers(new Set());
+    isFirstRender.current = true;
 
     getModelConfig(model, apiUrl)
       .then((cfg) => {
@@ -505,11 +506,17 @@ function useConfigurator(model: Model, apiUrl: string) {
     [config],
   );
 
-  // Trigger debounced render whenever layer selection changes
+  // Trigger debounced render whenever layer selection changes.
+  // First render (no previewUrl yet) fires immediately; subsequent changes
+  // are debounced so rapid clicks don't flood the API.
+  const isFirstRender = useRef(true);
   useEffect(() => {
     if (!config || visibleLayers.size === 0) return;
 
     if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+
+    const delay = isFirstRender.current ? 0 : 150;
+    isFirstRender.current = false;
 
     renderTimerRef.current = setTimeout(() => {
       setLoading(true);
@@ -536,7 +543,7 @@ function useConfigurator(model: Model, apiUrl: string) {
           setError(`Preview unavailable: ${err.message}`);
         })
         .finally(() => setLoading(false));
-    }, 300);
+    }, delay);
 
     return () => {
       if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
@@ -877,7 +884,7 @@ export default function EnergiccaConfigurator({
                 />
               ) : (
                 <div style={S.previewPlaceholder}>
-                  {configLoading ? (
+                  {configLoading || loading ? (
                     <div style={S.spinner} aria-label="Loading preview" />
                   ) : (
                     <span>Select options to preview</span>
