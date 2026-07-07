@@ -206,6 +206,10 @@ class ConfigRules(BaseModel):
     # incompatibilities: if layer X is active, none of the listed layers may
     # be active simultaneously.
     incompatibilities: dict[str, list[str]] = {}
+    # suppressed_by: layer X is skipped during compositing when any of the
+    # listed layers is also active (validation still passes — the layer is
+    # present in the request, just not rendered).
+    suppressed_by: dict[str, list[str]] = {}
 
 
 class ConfigSchema(BaseModel):
@@ -376,6 +380,14 @@ class ImageCompositor:
         canvas = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
         requested_set = set(layer_ids)
 
+        # Build the set of layers suppressed by active peers (e.g. passenger
+        # seat hidden when a CorsaClienti cover is active).
+        suppressed = {
+            layer_id
+            for layer_id, suppressors in self._config.rules.suppressed_by.items()
+            if any(s in requested_set for s in suppressors)
+        }
+
         # psd-tools iterates layers bottom-to-top in the PS layers panel,
         # so z_index=0 is the TOP layer (accessories) and the highest z_index
         # is the BACKGROUND. We must composite highest z first (background),
@@ -383,7 +395,7 @@ class ImageCompositor:
         ordered = [
             meta
             for meta in sorted(self._layers_by_id.values(), key=lambda l: l.z_index, reverse=True)
-            if meta.id in requested_set
+            if meta.id in requested_set and meta.id not in suppressed
         ]
 
         for meta in ordered:

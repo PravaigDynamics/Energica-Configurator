@@ -390,6 +390,26 @@
       ]
     },
     "incompatibilities": {},
-    "any_of_dependencies": {}
+    "any_of_dependencies": {},
+    "suppressed_by": {
+      "eg_62_passenger_seat_standard": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ],
+      "eg_63_passenger_seat_ego_tech_red": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ],
+      "eg_64_passenger_seat_ego_tech_green": [
+        "eg_65_cover_corsaclienti_grey",
+        "eg_66_cover_corsaclienti_white",
+        "eg_67_cover_corsaclienti_black",
+        "eg_68_cover_corsaclienti_red_copia"
+      ]
+    }
   }
 }
